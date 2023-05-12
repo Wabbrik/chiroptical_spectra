@@ -5,15 +5,15 @@ from pymoo.problems.functional import FunctionalProblem
 
 from overlap.metrics import tanimoto
 from overlap.weights import boltzmann_weights
-from spectrum.spectrum import ExperimentalSpectrum, Spectrum
+from spectrum.spectrum import ExperimentalSpectrum
 
 
-def fitness(x_energies: np.array[float], broadend: List[Spectrum], experimental_spectrum: ExperimentalSpectrum) -> np.array:
-    weights = boltzmann_weights(x_energies)
-    range = experimental_spectrum.freq_range
-    spectra_accumulator = np.sum([weights[i] * spec.vals(range)
-                                  for i, spec in enumerate(broadend)])
-    return -1 * tanimoto(spectra_accumulator, experimental_spectrum.vals(range))
+def fitness(x_energies: np.array[float], es: ExperimentalSpectrum, constant: str = "kcal/mol") -> np.array:
+    weights = boltzmann_weights(x_energies, constant=constant)
+    broadened = list(es.broadened.values())
+    spectra_accumulator = np.sum(
+        [weights[i] * spec.vals(es.freq_range) for i, spec in enumerate(broadened)])
+    return -1 * tanimoto(spectra_accumulator, es.vals(range))
 
 
 class GeneticProblem(FunctionalProblem):

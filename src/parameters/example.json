@@ -1,39 +1,39 @@
 {
-   "energy_uncertainty": 1.0, 
-   "experimental_spectra": {
-       "Spectra_1" : {
-           "file": "VCD_EXP",
-           "type": "VCD",
-           "mirroring_option": 0.3,
-           "hwhm": 6.0,
-           "interval": [950, 1850],
-           "scaling_factors": [[900, 1600, 1.020], [1600 , 1900 , 1.000]],
-           "optimise": true
-       },
-       "Spectra_2" : {
-           "file": "IR_EXP",
-           "type": "IR",
-           "mirroring_option": 0.3,
-           "hwhm": 6.0,
-           "interval": [950, 1850],
-           "scaling_factors": [[900, 1600, 1.020], [1600 , 1900 , 1.000]],
-           "optimise": true
-       }
-   },
-   "genetic_algorithm": "NEDLER_MEAD",
-   "skip_print": false,
-   "energy_unit" : "kcal/mol",
-   "energies" : {
-       "Spectra_1" : {
-          "rs_106" : -8372.9300,
-          "rs_104" : -8372.8200,
-          "rs_006" : -8372.7500
-       },
-       "Spectra_2" : {
-            "ds_106" : -8372.9300,
-            "ds_104" : -8372.8200,
-            "ds_006" : -8372.7500
-       }
-   },
-   "comment": "(1-tanimoto(vcd, VCD_EXP))**2 + (1-tanimoto(ir, IR_EXP))**2"
-}
+    "energy_uncertainty": 1.0,
+    "genetic_algorithm": "NEDLER_MEAD",
+    "skip_print": false,
+    "energy_unit": "kcal/mol",
+    "spectra": [
+        {
+            "name": "Spectra_1",
+            "type": "VCD",
+            "file": "VCD_EXP",
+            "mirroring_option": 0.3,
+            "hwhm": 6.0,
+            "interval": [950, 1850],
+            "scaling_factors": [[900, 1600, 1.020], [1600 , 1900 , 1.000]],
+            "optimise": true,
+            "energies": {
+                "rs_106": -8372.9300,
+                "rs_104": -8372.8200,
+                "rs_006": -8372.7500
+            }
+        },
+        {
+            "name": "Spectra_2",
+            "file": "IR_EXP",
+            "type": "IR",
+            "mirroring_option": 0.3,
+            "hwhm": 6.0,
+            "interval": [950, 1850],
+            "scaling_factors": [[900, 1600, 1.020], [1600 , 1900 , 1.000]],
+            "optimise": true,
+            "energies": {
+                "ds_106": -8372.9300,
+                "ds_104": -8372.8200,
+                "ds_006": -8372.7500
+            }
+        }
+    ],
+    "comment": "(1-tanimoto(vcd, VCD_EXP))**2 + (1-tanimoto(ir, IR_EXP))**2"
+ }

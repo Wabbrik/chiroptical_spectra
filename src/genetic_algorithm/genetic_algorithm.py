@@ -7,13 +7,14 @@ from pymoo.algorithms.soo.nonconvex.ga import GA
 from pymoo.algorithms.soo.nonconvex.nelder import NelderMead
 from pymoo.algorithms.soo.nonconvex.pattern import PatternSearch
 from pymoo.algorithms.soo.nonconvex.pso import PSO
-from pymoo.core.parameters import set_params, hierarchical
+from pymoo.core.parameters import hierarchical, set_params
 from pymoo.core.result import Result
 from pymoo.optimize import minimize
 from tqdm import tqdm
 
 from src.genetic_algorithm.genetic_problem import GeneticProblem
-from src.genetic_algorithm.hyperparameter import hyperparameter_optimize, hyperoptimizalble
+from src.genetic_algorithm.hyperparameter import (hyperoptimizalble,
+                                                  hyperparameter_optimize)
 from src.genetic_algorithm.seed import SEED
 
 ga_map = {
@@ -45,7 +46,8 @@ class GeneticAlgorithm:
                 pbar.update(1)
 
     def run(self, **kwargs) -> Result:
-        res = minimize(self.problem, self.algorithm_type,
-                       seed=SEED, verbose=True, **kwargs)
+        res: Result = minimize(
+            self.problem, self.algorithm_type, seed=SEED, verbose=True, **kwargs
+        )
         print(f"Runtime was: {res.exec_time:.2f} seconds.")
         return res

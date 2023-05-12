@@ -11,7 +11,7 @@ def get_scale_factor(freq_value: float, scaling_factors: list) -> float:
     return next((freq_value * scale for lower, upper, scale in scaling_factors if lower < freq_value <= upper), freq_value)
 
 
-def broaden(s: Spectrum, es: ExperimentalSpectrum) -> Spectrum:
+def broaden_delegate(s: Spectrum, es: ExperimentalSpectrum) -> Spectrum:
     freq_range, hwhm, intervals = es.freq_range, es.hwhm, es.scaling_factors
 
     broadened_spectrum = None

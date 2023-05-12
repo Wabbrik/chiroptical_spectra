@@ -18,3 +18,4 @@ build/
 # Environments
 venv/
 env/
+testing_data/

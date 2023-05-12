@@ -1,14 +1,13 @@
 
 import json
 from os.path import dirname, join
-from typing import Callable, Dict, List
+from typing import Callable, List
 
 import numpy as np
 
 from genetic_algorithm.genetic_algorithm import ga_map
 from genetic_algorithm.genetic_problem import fitness
-from spectrum.broadening import broaden
-from spectrum.spectrum import (ExperimentalSpectrum, Spectrum,
+from spectrum.spectrum import (ExperimentalSpectrum,
                                string_to_spectrum_type)
 
 
@@ -17,20 +16,27 @@ class InputParameters:
         self.base_path = dirname(path)
         with open(path) as f:
             self.params = json.load(f)
-        self._set_params(dirname(path))
+        self._set_params()
 
     def __assert_preconditions(self) -> None:
         # should probably validate the schema in some way
         ...
 
+    def __assert_postconditions(self) -> None:
+        # energy values should be the same and in the same order
+        energies = [spectrum.energies_array()
+                    for spectrum in self.experimental_spectra]
+        if len(energies) > 1:
+            if not all(np.array_equal(energies[0], arr) for arr in energies[1:]):
+                raise ValueError("Given energies were not the same.")
+
     def _set_params(self) -> None:
         self.__assert_preconditions()
         self.energy_uncertainty = self.params["energy_uncertainty"]
-        self.experimental_spectra = self._get_experimental_spectra()
         self.genetic_algorithm = self._get_genetic_algorithm()
         self.skip_print, self.energy_unit = self.params["skip_print"], self.params["energy_unit"]
-        self.energies = self._get_energies()
-        self.broadened_spectra = self._broaden_spectra()
+        self.experimental_spectra = self._get_experimental_spectra()
+        self.__assert_postconditions()
 
     def _get_genetic_algorithm(self) -> str:
         if ga := self.params["genetic_algorithm"] not in ga_map.keys():
@@ -39,57 +45,29 @@ class InputParameters:
             )
         return ga
 
-    def _get_experimental_spectra(self) -> Dict[str, ExperimentalSpectrum]:
-        experimental_spectra = {}
-        for spectrum, info in self.params["experimental_spectra"]:
-            experimental_spectra[spectrum] = ExperimentalSpectrum.from_path(
-                path=join(self.base_path, info["file"]),
-                type=string_to_spectrum_type(info["type"]),
-                mirroring_option=info["mirroring_option"],
-                hwhm=info["hwhm"],
-                freq_range=info["interval"],
-                scaling_factors=info["scaling_factors"]
+    def _get_experimental_spectra(self) -> List[ExperimentalSpectrum]:
+        return [
+            ExperimentalSpectrum.from_path(
+                path=join(self.base_path, spectrum_data["file"]),
+                type=string_to_spectrum_type(spectrum_data["type"]),
+                mirroring_option=spectrum_data["mirroring_option"],
+                hwhm=spectrum_data["hwhm"],
+                freq_range=spectrum_data["interval"],
+                scaling_factors=spectrum_data["scaling_factors"],
+                is_opt_candidate=spectrum_data["optimise"],
+                energies=spectrum_data["energies"]
             )
-        return experimental_spectra
-
-    def optimisation_candidates(self) -> Dict[str, ExperimentalSpectrum]:
-        return {  # used to determine objectives
-            spectrum: self.experimental_spectra[spectrum]
-            for spectrum, info in self.params["experimental_spectra"]
-            if info["optimise"] == True
-        }
-
-    def _get_energies(self) -> Dict[str, Dict[str, float]]:
-        def assert_same_energies(mappings: List[Dict[str, float]]):
-            if mappings and len(mappings) > 1:
-                arrays = [np.array(list(mapping.values()))
-                          for mapping in mappings]
-                if not all(np.array_equal(arrays[0], arr) for arr in arrays[1:]):
-                    raise ValueError("Mismatched energies")
-
-        assert_same_energies(list(self.params["energies"].values()))
-        return self.params["energies"].items()
+            for spectrum_data in self.params["spectra_data"]
+        ]
 
     def energies_array(self) -> np.ndarray:
-        return np.array(
-            list(
-                self.energies[next(iter(self.experimental_spectra))]
-                 .values()  # should be the same regardless of experiment
-            )
-        )
-
-    def _broaden_spectra(self) -> Dict[str, Dict[str, Spectrum]]:
-        broadend_spectra = {}
-        for exp_spectrum, spectrum_mapping in self.energies.items():
-            broadend_spectra[exp_spectrum] = {
-                fname: broaden(s=Spectrum.from_path(
-                    join(self.base_path, fname)), es=self.experimental_spectra[exp_spectrum])
-                for fname, _ in spectrum_mapping.items()}
-
-        return broadend_spectra
+        return next(self.experimental_spectra).energies_array()
 
     def objective_function(self) -> Callable[[np.array], float]:
+        candidates = [
+            spectrum for spectrum in self.experimental_spectra if spectrum.is_opt_candidate]
+
         def obj(x: np.array) -> float:
-            return np.prod([fitness(x, list(self.broadened_spectra[experiment].values()), candidate)
-                            for experiment, candidate in self.optimisation_candidates().items()])
+            return np.prod([fitness(x, candidate, self.energy_unit) for candidate in candidates])
+
         return obj

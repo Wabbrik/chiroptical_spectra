@@ -1,7 +1,10 @@
 from enum import Enum, auto
-from typing import List, Tuple
+from os.path import join, dirname
+from typing import Dict, List, Tuple
 
 import numpy as np
+
+from spectrum.broadening import broaden_delegate
 
 
 class SpectrumType(Enum):
@@ -49,7 +52,7 @@ class Spectrum:
         self._vals *= other
         return self
 
-    def vals(self, freq_range: Tuple[float, float] = None) -> np.array:
+    def vals(self, freq_range: Tuple[float, float] = None) -> np.ndarray:
         if freq_range is None:
             return self._vals
         start, end = sorted(freq_range)
@@ -76,28 +79,36 @@ class ExperimentalSpectrum(Spectrum):
         mirroring_option: float,
         hwhm: float,
         freq_range: Tuple[float, float],
-        scaling_factors: List[List[float]]
+        scaling_factors: List[List[float]],
+        is_opt_candidate: bool,
+        energies: Dict[str, float]
     ) -> "ExperimentalSpectrum":
         data = np.loadtxt(path)
         return cls(
             freq=data[:, 0],
             vals=data[:, 1],
+            broadening_dir=dirname(path),
             type=type,
             mirroring_option=mirroring_option,
             hwhm=hwhm,
             freq_range=freq_range,
-            scaling_factors=scaling_factors
+            scaling_factors=scaling_factors,
+            is_opt_candidate=is_opt_candidate,
+            energies=energies
         )
 
     def __init__(
         self,
         freq: np.array,
         vals: np.array,
+        broadening_dir: str,
         type: SpectrumType,
         mirroring_option: float,
         hwhm: float,
         freq_range: Tuple[float, float],
-        scaling_factors: List[List[float]]
+        scaling_factors: List[List[float]],
+        is_opt_candidate: bool,
+        energies: Dict[str, float]
     ) -> None:
         super().__init__(freq, vals)
         self.type = type
@@ -105,6 +116,11 @@ class ExperimentalSpectrum(Spectrum):
         self.hwhm = hwhm
         self.freq_range = freq_range
         self.scaling_factors = scaling_factors
+        self.is_opt_candidate = is_opt_candidate
+        self.energies = energies
+        self.broadened: Dict[str, Spectrum] = self._broaden(
+            broadening_dir, self.energies
+        )
 
     def __str__(self) -> str:
         return f"""ExperimentalSpectrum(
@@ -113,5 +129,22 @@ class ExperimentalSpectrum(Spectrum):
                     type={self.type},
                     hwhm={self.hwhm},
                     freq_range={self.freq_range},
-                    scaling_factors={self.scaling_factors}
+                    scaling_factors={self.scaling_factors},
+                    optimise={self.is_opt_candidate},
+                    energies={self.energies}
                 )"""
+
+    def energies_array(self) -> np.ndarray:
+        return np.array(list(self.energies.values()))
+
+    def write_broadened(self, dir: str) -> None:
+        for fname, spectrum in self.broadened.items():
+            spectrum.write(join(dir, f"{fname}.dat"))
+
+    def _broaden(self, dirpath: str, energies: Dict[str, float]) -> Dict[str, Spectrum]:
+        return {
+            fname: broaden_delegate(
+                s=Spectrum.from_path(join(dirpath, fname)), es=self
+            )
+            for fname in list(energies.keys())
+        }
