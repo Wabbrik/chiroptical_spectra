@@ -103,3 +103,10 @@ class ExperimentalSpectrum(Spectrum):
         return broaden_func(
             spectrum=s, freq_range=self.freq_range, hwhm=self.hwhm, grid=self.freq(), intervals=self.scaling_factors
         ) * self.mirroring_option
+
+    def simulated_vals(self, weights: np.ndarray) -> np.ndarray:
+        vals = [
+            spec.vals(self.freq_range)
+            for spec in list(self.broadened.values())
+        ]
+        return np.sum([weights[i] * val for i, val in enumerate(vals)], axis=0)

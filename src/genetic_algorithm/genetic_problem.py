@@ -16,10 +16,8 @@ constants = {
 
 
 def fitness(x_energies: np.ndarray, es: ExperimentalSpectrum, constant: str = "kcal/mol") -> np.array:
-    weights = boltzmann_weights(x_energies, constant=constants[constant])
-    vals = [spec.vals(es.freq_range) for spec in list(es.broadened.values())]
-    spectra_accumulator = np.sum(
-        [weights[i] * val for i, val in enumerate(vals)], axis=0)
+    spectra_accumulator = es.simulated_vals(
+        boltzmann_weights(x_energies, constants[constant]))
     return tanimoto(spectra_accumulator, es.vals(es.freq_range))
 
 

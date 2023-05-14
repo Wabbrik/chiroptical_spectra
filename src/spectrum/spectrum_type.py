@@ -18,3 +18,11 @@ def string_to_spectrum_type(string: str) -> SpectrumType:
     if string == 'UV':
         return SpectrumType.UV
     raise ValueError(f'Unknown spectrum type: {string}')
+
+
+title_by_type = {
+    SpectrumType.VCD: "$\Delta \epsilon$(M$^{-1} \cdot$ cm$^{-1}$)",
+    SpectrumType.IR: "$\epsilon$(M$^{-1} \cdot$ cm$^{-1}$)",
+    SpectrumType.ECD: "$\Delta \epsilon$(M$^{-1} \cdot$ cm$^{-1}$)",
+    SpectrumType.UV: "$\epsilon$(M$^{-1} \cdot$ cm$^{-1}$)",
+}

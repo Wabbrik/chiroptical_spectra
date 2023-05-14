@@ -1,5 +1,3 @@
-from time import time
-
 from pymoo.algorithms.soo.nonconvex.brkga import BRKGA
 from pymoo.algorithms.soo.nonconvex.de import DE
 from pymoo.algorithms.soo.nonconvex.es import ES

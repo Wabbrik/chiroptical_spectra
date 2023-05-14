@@ -5,7 +5,7 @@ from os.path import join
 from genetic_algorithm.genetic_algorithm import GeneticAlgorithm
 from genetic_algorithm.genetic_problem import GeneticProblem, constants
 from parameters.input_parameters import InputParameters
-from parameters.utils import write_results
+from parameters.utils import plot_results, write_results
 
 
 def main() -> int:
@@ -26,6 +26,13 @@ def main() -> int:
         write_results(
             path=getcwd(),
             fitness=res.F[0],
+            experimental_spectra=ip.experimental_spectra,
+            energies=res.X,
+            constant=constants[ip.energy_unit]
+        )
+
+        plot_results(
+            path=getcwd(),
             experimental_spectra=ip.experimental_spectra,
             energies=res.X,
             constant=constants[ip.energy_unit]
