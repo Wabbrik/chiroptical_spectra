@@ -3,9 +3,8 @@
     "genetic_algorithm": "NEDLER_MEAD",
     "skip_print": false,
     "energy_unit": "kcal/mol",
-    "spectra": [
+    "spectra_data": [
         {
-            "name": "Spectra_1",
             "type": "VCD",
             "file": "VCD_EXP",
             "mirroring_option": 0.3,
@@ -20,7 +19,6 @@
             }
         },
         {
-            "name": "Spectra_2",
             "file": "IR_EXP",
             "type": "IR",
             "mirroring_option": 0.3,

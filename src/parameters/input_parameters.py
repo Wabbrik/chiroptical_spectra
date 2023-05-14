@@ -7,8 +7,8 @@ import numpy as np
 
 from genetic_algorithm.genetic_algorithm import ga_map
 from genetic_algorithm.genetic_problem import fitness
-from spectrum.spectrum import (ExperimentalSpectrum,
-                               string_to_spectrum_type)
+from spectrum.experimental_spectrum import ExperimentalSpectrum
+from spectrum.spectrum_type import string_to_spectrum_type
 
 
 class InputParameters:
@@ -39,11 +39,13 @@ class InputParameters:
         self.__assert_postconditions()
 
     def _get_genetic_algorithm(self) -> str:
-        if ga := self.params["genetic_algorithm"] not in ga_map.keys():
+        ga = self.params.get("genetic_algorithm")
+        if ga in ga_map:
+            return ga
+        else:
+            valid_gas = ', '.join(ga_map.keys())
             raise KeyError(
-                f'Genetic algorithm {ga} not found, try one of: {", ".join(ga_map.keys())}'
-            )
-        return ga
+                f'Invalid genetic algorithm "{ga}". Valid options are: {valid_gas}')
 
     def _get_experimental_spectra(self) -> List[ExperimentalSpectrum]:
         return [
@@ -61,13 +63,13 @@ class InputParameters:
         ]
 
     def energies_array(self) -> np.ndarray:
-        return next(self.experimental_spectra).energies_array()
+        return self.experimental_spectra[0].energies_array()
 
     def objective_function(self) -> Callable[[np.array], float]:
         candidates = [
             spectrum for spectrum in self.experimental_spectra if spectrum.is_opt_candidate]
 
         def obj(x: np.array) -> float:
-            return np.prod([fitness(x, candidate, self.energy_unit) for candidate in candidates])
+            return - np.prod([fitness(x, candidate, self.energy_unit) for candidate in candidates])
 
         return obj

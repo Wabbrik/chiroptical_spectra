@@ -8,9 +8,9 @@ constants = {
 }
 
 
-def boltzmann_weights(energies: np.array[float], constant: str = "kcal/mol") -> np.ndarray[float]:
-    np.exp((energies - min(energies)) * constants[constant] /
-           0.02569260860624242419, out=energies)
+def boltzmann_weights(energies: np.ndarray, constant: str = "kcal/mol") -> np.ndarray:
+    energies = np.exp((energies - min(energies)) * constants[constant] /
+                      0.02569260860624242419)
     rcp_s, min_i = 1 / np.sum(1 / energies), energies.argmin()
     energies, energies[min_i] = rcp_s / energies, rcp_s
     return energies

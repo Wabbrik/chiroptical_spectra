@@ -12,30 +12,30 @@ from pymoo.core.result import Result
 from pymoo.optimize import minimize
 from tqdm import tqdm
 
-from src.genetic_algorithm.genetic_problem import GeneticProblem
-from src.genetic_algorithm.hyperparameter import (hyperoptimizalble,
-                                                  hyperparameter_optimize)
-from src.genetic_algorithm.seed import SEED
+from genetic_algorithm.genetic_problem import GeneticProblem
+from genetic_algorithm.hyperparameter import (hyperoptimizalble,
+                                              hyperparameter_optimize)
+from genetic_algorithm.seed import SEED
 
 ga_map = {
-    "GA":             GA,
-    "BRKGA":          BRKGA,
-    "DE":             DE,
-    "NEDLER_MEAD":    NelderMead,
-    "PSO":            PSO,
-    "PATTERN_SEARCH": PatternSearch,
-    "ES":             ES,
+    "GA":             GA(),
+    "BRKGA":          BRKGA(),
+    "DE":             DE(),
+    "NEDLER_MEAD":    NelderMead(),
+    "PSO":            PSO(),
+    "PATTERN_SEARCH": PatternSearch(),
+    "ES":             ES(),
 }
 
 
 class GeneticAlgorithm:
 
-    def __int__(self, ga_type: str, genetic_problem: GeneticProblem) -> None:
+    def __init__(self, ga_type: str, genetic_problem: GeneticProblem) -> None:
         self.problem = genetic_problem
         self.algorithm_type = ga_map[ga_type]
         self._apply_hyper_params(ga_type)
 
-    def _apply_hyper_params(self, ga_type):
+    def _apply_hyper_params(self, ga_type: str):
         if hyperoptimizalble(self.algorithm_type):
             with tqdm(total=1) as pbar:
                 pbar.set_description(
@@ -49,5 +49,4 @@ class GeneticAlgorithm:
         res: Result = minimize(
             self.problem, self.algorithm_type, seed=SEED, verbose=True, **kwargs
         )
-        print(f"Runtime was: {res.exec_time:.2f} seconds.")
         return res

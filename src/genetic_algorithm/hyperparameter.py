@@ -13,8 +13,8 @@ from pymoo.core.algorithm import Algorithm
 from pymoo.core.result import Result
 from pymoo.optimize import minimize
 
-from src.genetic_algorithm.genetic_problem import GeneticProblem
-from src.genetic_algorithm.seed import SEED
+from genetic_algorithm.genetic_problem import GeneticProblem
+from genetic_algorithm.seed import SEED
 
 
 def hyperoptimizalble(algorithm_type: Union[GeneticAlgorithm, LocalSearch, Algorithm]) -> bool:
