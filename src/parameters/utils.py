@@ -25,8 +25,14 @@ def commit_mapping_to_file(fpath: str, mapping: Dict[any, float]):
             f.write(f"{key} {value:.4f}\n")
 
 
-def write_results(path: str, fitness: float, experimental_spectra: List[ExperimentalSpectrum], energies: List[float]) -> None:
-    for name, values in [("gaEs", energies), ("gaBWs", boltzmann_weights(energies))]:
+def write_results(
+        path: str,
+        fitness: float,
+        experimental_spectra: List[ExperimentalSpectrum],
+        energies: List[float],
+        constant: float
+) -> None:
+    for name, values in [("gaEs", energies), ("gaBWs", boltzmann_weights(energies, constant))]:
         try:
             commit_mapping_to_file(
                 file_path := join(path, f"{name}{-fitness:.3f}"), mapping_to_write(experimental_spectra[0], values)

@@ -7,12 +7,19 @@ from overlap.metrics import tanimoto
 from overlap.weights import boltzmann_weights
 from spectrum.experimental_spectrum import ExperimentalSpectrum
 
+constants = {
+    "kcal/mol": 0.0433640,
+    "kj/mol": 0.01036,
+    "ev": 1.0,
+    "hartree": 27.211396132,
+}
+
 
 def fitness(x_energies: np.ndarray, es: ExperimentalSpectrum, constant: str = "kcal/mol") -> np.array:
-    weights = boltzmann_weights(x_energies, constant=constant)
-    broadened = list(es.broadened.values())
+    weights = boltzmann_weights(x_energies, constant=constants[constant])
+    vals = [spec.vals(es.freq_range) for spec in list(es.broadened.values())]
     spectra_accumulator = np.sum(
-        [weights[i] * spec.vals(es.freq_range) for i, spec in enumerate(broadened)], axis=0)
+        [weights[i] * val for i, val in enumerate(vals)], axis=0)
     return tanimoto(spectra_accumulator, es.vals(es.freq_range))
 
 
