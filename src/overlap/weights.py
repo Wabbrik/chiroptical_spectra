@@ -2,7 +2,7 @@ import numpy as np
 
 
 def boltzmann_weights(energies: np.ndarray, constant: float) -> np.ndarray:
-    energies = energies.astype(np.float32)
+    energies = energies.astype(np.float64)
     energies = np.exp(
         (energies - np.min(energies)) * constant / 0.02569260860624242419
     )

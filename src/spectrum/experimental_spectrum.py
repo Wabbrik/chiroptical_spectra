@@ -22,7 +22,7 @@ class ExperimentalSpectrum(Spectrum):
         is_opt_candidate: bool,
         energies: Dict[str, float]
     ) -> "ExperimentalSpectrum":
-        data = np.loadtxt(path, dtype=np.float32)
+        data = np.loadtxt(path, dtype=np.float64)
         return cls(
             freq=data[:, 0],
             vals=data[:, 1],
@@ -74,7 +74,7 @@ class ExperimentalSpectrum(Spectrum):
                 )"""
 
     def energies_array(self) -> np.ndarray:
-        return np.array(list(self.energies.values()), dtype=np.float32)
+        return np.array(list(self.energies.values()), dtype=np.float64)
 
     def write_broadened(self, dir: str) -> None:
         for fname, spectrum in self.broadened.items():

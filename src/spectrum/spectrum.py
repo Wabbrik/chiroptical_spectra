@@ -6,12 +6,12 @@ import numpy as np
 class Spectrum:
     @classmethod
     def from_path(cls, path: str) -> "Spectrum":
-        data = np.loadtxt(path, dtype=np.float32)
+        data = np.loadtxt(path, dtype=np.float64)
         return cls(freq=data[:, 0], vals=data[:, 1])
 
     def __init__(self, freq: np.array, vals: np.array) -> None:
-        self._freq = freq.astype(np.float32)
-        self._vals = vals.astype(np.float32)
+        self._freq = freq.astype(np.float64)
+        self._vals = vals.astype(np.float64)
 
     def __str__(self) -> str:
         return f'Spectrum(freq={self._freq}, vals={self._vals})'
