@@ -19,3 +19,11 @@ build/
 venv/
 env/
 testing_data/
+
+# Windows venv
+Include/
+Lib/
+Scripts/
+share/
+LICENSE
+pyvenv.cfg
