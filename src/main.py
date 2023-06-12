@@ -4,17 +4,28 @@ from os.path import join
 
 from genetic_algorithm.genetic_algorithm import GeneticAlgorithm
 from genetic_algorithm.genetic_problem import GeneticProblem, constants
+from objective.concrete.cluster_fitness_objective import ClusterFitnessObjective
+from objective.concrete.prod_fitness_objective import ProdFitnessObjective
 from parameters.input_parameters import InputParameters
 from parameters.utils import plot_results, write_results
 
 
 def main() -> int:
     ip = InputParameters(path=join(getcwd(), "GA_Analysis_File.json"))
-
+    obj = ClusterFitnessObjective(
+        candidates=ip.optimization_candidates(),
+        energy_unit=ip.energy_unit,
+        cut_point=0.7,
+    )
+    # obj = ProdFitnessObjective(
+    #     ip.optimization_candidates(), ip.energy_unit,
+    # )
     genetic_algorithm = GeneticAlgorithm(
         ga_type=ip.genetic_algorithm,
         genetic_problem=GeneticProblem(
-            energies=ip.energies_array(), error=ip.energy_uncertainty, objs=ip.objective_function()
+            energies=obj.get_chromosome(),
+            error=ip.energy_uncertainty,
+            objs=obj
         )
     )
 

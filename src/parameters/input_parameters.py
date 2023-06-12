@@ -1,12 +1,11 @@
 
 import json
 from os.path import dirname, join
-from typing import Callable, List
+from typing import List
 
 import numpy as np
 
 from genetic_algorithm.genetic_algorithm import ga_map
-from genetic_algorithm.genetic_problem import fitness
 from spectrum.experimental_spectrum import ExperimentalSpectrum
 from spectrum.spectrum_type import string_to_spectrum_type
 
@@ -62,14 +61,5 @@ class InputParameters:
             for spectrum_data in self.params["spectra_data"]
         ]
 
-    def energies_array(self) -> np.ndarray:
-        return self.experimental_spectra[0].energies_array()
-
-    def objective_function(self) -> Callable[[np.array], float]:
-        candidates = [
-            spectrum for spectrum in self.experimental_spectra if spectrum.is_opt_candidate]
-
-        def obj(x: np.array) -> float:
-            return - np.prod([fitness(x, candidate, self.energy_unit) for candidate in candidates])
-
-        return obj
+    def optimization_candidates(self) -> List[ExperimentalSpectrum]:
+        return [spectrum for spectrum in self.experimental_spectra if spectrum.is_opt_candidate]
