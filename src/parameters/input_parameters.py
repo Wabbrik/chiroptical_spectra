@@ -54,7 +54,7 @@ class InputParameters:
                 type=string_to_spectrum_type(spectrum_data["type"]),
                 mirroring_option=spectrum_data["mirroring_option"],
                 hwhm=spectrum_data["hwhm"],
-                freq_range=spectrum_data["interval"],
+                freq_range=tuple(spectrum_data["interval"]),
                 scaling_factors=spectrum_data["scaling_factors"],
                 is_opt_candidate=spectrum_data["optimise"],
                 energies=spectrum_data["energies"]

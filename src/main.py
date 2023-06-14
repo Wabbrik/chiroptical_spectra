@@ -2,10 +2,14 @@ import sys
 from os import getcwd
 from os.path import join
 
+import numpy as np
+
 from genetic_algorithm.genetic_algorithm import GeneticAlgorithm
-from genetic_algorithm.genetic_problem import GeneticProblem, constants
+from genetic_algorithm.genetic_problem import GeneticProblem
 from parameters.input_parameters import InputParameters
 from parameters.utils import plot_results, write_results
+
+np.random.seed(123)
 
 
 def main() -> int:
@@ -28,14 +32,14 @@ def main() -> int:
             fitness=res.F[0],
             experimental_spectra=ip.experimental_spectra,
             energies=res.X,
-            constant=constants[ip.energy_unit]
+            constant=ip.energy_unit
         )
 
         plot_results(
             path=getcwd(),
             experimental_spectra=ip.experimental_spectra,
             energies=res.X,
-            constant=constants[ip.energy_unit]
+            constant=ip.energy_unit
         )
 
     return 0
