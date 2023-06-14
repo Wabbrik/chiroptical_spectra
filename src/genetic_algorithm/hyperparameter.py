@@ -17,7 +17,7 @@ from genetic_algorithm.genetic_problem import GeneticProblem
 from genetic_algorithm.seed import SEED
 
 
-def hyperoptimizalble(algorithm_type: Union[GeneticAlgorithm, LocalSearch, Algorithm]) -> bool:
+def hyperoptimizable(algorithm_type: Union[GeneticAlgorithm, LocalSearch, Algorithm]) -> bool:
     return not any(isinstance(algorithm_type, cls) for cls in (PatternSearch, PSO, NelderMead, ES))
 
 

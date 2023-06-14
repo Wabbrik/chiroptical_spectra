@@ -1,3 +1,4 @@
+from functools import lru_cache
 from typing import Tuple
 
 import numpy as np
@@ -29,6 +30,7 @@ class Spectrum:
         self._vals *= other
         return self
 
+    @lru_cache(maxsize=2)
     def vals(self, freq_range: Tuple[float, float] = None) -> np.ndarray:
         if freq_range is None:
             return self._vals

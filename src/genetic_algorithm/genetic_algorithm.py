@@ -11,12 +11,11 @@ from pymoo.optimize import minimize
 from tqdm import tqdm
 
 from genetic_algorithm.genetic_problem import GeneticProblem
-from genetic_algorithm.hyperparameter import (hyperoptimizalble,
-                                              hyperparameter_optimize)
+from genetic_algorithm.hyperparameter import hyperoptimizable, hyperparameter_optimize
 from genetic_algorithm.seed import SEED
 
 ga_map = {
-    "GA":             GA(),
+    "GA":             GA(pop_size=500),
     "BRKGA":          BRKGA(),
     "DE":             DE(),
     "NEDLER_MEAD":    NelderMead(),
@@ -34,12 +33,10 @@ class GeneticAlgorithm:
         self._apply_hyper_params(ga_type)
 
     def _apply_hyper_params(self, ga_type: str):
-        if hyperoptimizalble(self.algorithm_type):
+        if hyperoptimizable(self.algorithm_type):
             with tqdm(total=1) as pbar:
-                pbar.set_description(
-                    f"Applying Hyperparameter optimization to {ga_type}")
-                hyper_res = hyperparameter_optimize(
-                    self.algorithm_type, self.problem)
+                pbar.set_description(f"Applying Hyperparameter optimization to {ga_type}")
+                hyper_res = hyperparameter_optimize(self.algorithm_type, self.problem)
                 set_params(self.algorithm_type, hierarchical(hyper_res.X))
                 pbar.update(1)
 
