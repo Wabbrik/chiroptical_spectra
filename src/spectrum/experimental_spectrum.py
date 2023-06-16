@@ -106,4 +106,4 @@ class ExperimentalSpectrum(Spectrum):
         ) * self.mirroring_option
 
     def simulated_vals(self, weights: np.ndarray) -> np.ndarray:
-        return np.dot(weights, self.broadened_vals)
+        return weights@self.broadened_vals
