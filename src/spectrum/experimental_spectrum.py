@@ -60,7 +60,8 @@ class ExperimentalSpectrum(Spectrum):
         self.broadened: Dict[str, Spectrum] = self._broaden(
             broadening_dir, self.energies
         )
-        self.broadened_vals = np.array([spec.vals(self.freq_range) for spec in self.broadened.values()])
+        self.broadened_vals = np.array(
+            [spec.vals(self.freq_range) for spec in self.broadened.values()])
 
     def __str__(self) -> str:
         return f"""ExperimentalSpectrum(
@@ -106,4 +107,4 @@ class ExperimentalSpectrum(Spectrum):
         ) * self.mirroring_option
 
     def simulated_vals(self, weights: np.ndarray) -> np.ndarray:
-        return weights@self.broadened_vals
+        return weights @ self.broadened_vals
