@@ -19,8 +19,7 @@ def vcd_broaden(
         grid: np.ndarray,
         intervals: List
 ) -> Spectrum:
-    new_x, rs_y = grid.astype(dtype=np.single), np.zeros(
-        grid.shape, dtype=np.single)
+    new_x, rs_y = grid.astype(dtype=np.single), np.zeros(grid.shape, dtype=np.single)
     lower, upper = sorted(freq_range)
     hwhm_ = 15 * hwhm
     t_hwhm_2 = np.full([len(new_x), ], hwhm ** 2, dtype=np.single)
@@ -28,10 +27,8 @@ def vcd_broaden(
 
     for i, x_value in enumerate(spectrum.freq()):
         if (lower - hwhm_) < x_value < (upper + hwhm_):
-            t_y = np.full([len(new_x), ], spectrum.vals()[i] /
-                          np.pi, dtype=np.single)
-            t_sf = np.full([len(new_x), ], get_scale_factor(
-                x_value, intervals), dtype=np.single)
+            t_y = np.full([len(new_x), ], spectrum.vals()[i] / np.pi, dtype=np.single)
+            t_sf = np.full([len(new_x), ], get_scale_factor(x_value, intervals), dtype=np.single)
             rs_y += (t_y * t_x229600 * hwhm / ((new_x - t_sf) ** 2 + t_hwhm_2))
 
     return Spectrum(new_x, rs_y)
@@ -44,8 +41,7 @@ def ir_broaden(
         grid: np.ndarray,
         intervals: List
 ) -> Spectrum:
-    new_x, ds_y = grid.astype(dtype=np.single), np.zeros(
-        grid.shape, dtype=np.single)
+    new_x, ds_y = grid.astype(dtype=np.single), np.zeros(grid.shape, dtype=np.single)
     lower, upper = sorted(freq_range)
     hwhm_ = 15 * hwhm
     t_hwhm_2 = np.full([len(new_x), ], hwhm ** 2, dtype=np.single)
@@ -53,10 +49,8 @@ def ir_broaden(
 
     for i, x_value in enumerate(spectrum.freq()):
         if (lower - hwhm_) < x_value < (upper + hwhm_):
-            t_y = np.full([len(new_x), ], (spectrum.vals()[i] /
-                          np.pi), dtype=np.single)
-            t_sf = np.full([len(new_x), ], get_scale_factor(
-                x_value, intervals), dtype=np.single)
+            t_y = np.full([len(new_x), ], (spectrum.vals()[i] / np.pi), dtype=np.single)
+            t_sf = np.full([len(new_x), ], get_scale_factor(x_value, intervals), dtype=np.single)
             ds_y += t_y * t_x9184 * hwhm / ((new_x - t_sf) ** 2 + t_hwhm_2)
 
     return Spectrum(new_x, ds_y)
@@ -69,17 +63,14 @@ def ecd_broaden(
         intervals: List,
         **kwargs,
 ) -> Spectrum:
-    new_x, ecd_y = grid.astype(dtype=np.single), np.zeros(
-        len(new_x), dtype=np.single)
+    new_x, ecd_y = grid.astype(dtype=np.single), np.zeros(len(new_x), dtype=np.single)
     rcp_hwhm = 1.0 / hwhm
     epsilon_constant = 1.0 / (22.94 * hwhm * sqrt(np.pi))
 
     for i, x_value in enumerate(spectrum.freq()):
-        energy_nm = np.full([len(new_x), ], get_scale_factor(
-            x_value, intervals), dtype=np.single)
+        energy_nm = np.full([len(new_x), ], get_scale_factor(x_value, intervals), dtype=np.single)
         ecd_delta_epsilon = energy_nm * spectrum.vals()[i] * epsilon_constant
-        ecd_y += ecd_delta_epsilon * \
-            np.exp(-((new_x - energy_nm) * rcp_hwhm) ** 2)
+        ecd_y += ecd_delta_epsilon * np.exp(-((new_x - energy_nm) * rcp_hwhm) ** 2)
 
     return Spectrum(new_x, ecd_y)
 
@@ -91,12 +82,10 @@ def uv_broaden(
     intervals: List,
     **kwargs,
 ) -> Spectrum:
-    new_x, uv_y = grid.astype(dtype=np.single), np.zeros(
-        len(new_x), dtype=np.single)
+    new_x, uv_y = grid.astype(dtype=np.single), np.zeros(len(new_x), dtype=np.single)
 
     for i, x_value in enumerate(spectrum.freq()):
-        energy_nm = np.full([len(new_x), ], get_scale_factor(
-            x_value, intervals), dtype=np.single)
+        energy_nm = np.full([len(new_x), ], get_scale_factor(x_value, intervals), dtype=np.single)
         uv_epsilon = 13.064 * energy_nm * energy_nm * spectrum.vals()[i] / hwhm
         uv_y += uv_epsilon * np.exp(-((new_x - energy_nm) / hwhm) ** 2)
 

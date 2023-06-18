@@ -1,19 +1,21 @@
 import numpy as np
 
+WEIGHT_FOR_CONSTANTS = 1.0 / 0.02569260860624242419
 
 constants = {
-    "kcal/mol": 0.0433640,
-    "kj/mol": 0.01036,
-    "ev": 1.0,
-    "hartree": 27.211396132,
+    "kcal/mol": 0.0433640 * WEIGHT_FOR_CONSTANTS,
+    "kj/mol": 0.01036 * WEIGHT_FOR_CONSTANTS,
+    "ev": 1.0 * WEIGHT_FOR_CONSTANTS,
+    "hartree": 27.211396132 * WEIGHT_FOR_CONSTANTS,
 }
 
 
 def boltzmann_weights(energies: np.ndarray, constant: str) -> np.ndarray:
     energies = energies.astype(np.float64)
-    energies = np.exp(
-        (energies - np.min(energies)) * constants[constant] / 0.02569260860624242419
-    )
-    rcp_s, min_i = 1 / np.sum(1 / energies), energies.argmin()
-    energies, energies[min_i] = rcp_s / energies, rcp_s
+    energies = np.exp((energies - np.min(energies)) * constants[constant])
+    rcp_energies = 1 / energies
+    rcp_s = 1 / np.sum(rcp_energies)
+    min_i = energies.argmin()
+    energies = rcp_s * rcp_energies
+    energies[min_i] = rcp_s
     return energies
