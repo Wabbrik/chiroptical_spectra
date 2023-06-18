@@ -1,6 +1,7 @@
 from typing import Callable
 
 import numpy as np
+from scipy.stats import wasserstein_distance, spearmanr, kendalltau, pearsonr
 from pymoo.problems.functional import FunctionalProblem
 
 from overlap.metrics import tanimoto
@@ -17,9 +18,12 @@ def fitness(
     dropout_percentage: float = 0.08
 ) -> np.array:
     weights = boltzmann_weights(x_energies, constant)
-    weights[_rng.random(len(weights)) < dropout_percentage] = 0.0
+
+    normal_distance, _ = pearsonr(weights, es.correlation_weights)
+
+    # weights[_rng.random(len(weights)) < dropout_percentage] = 0.0
     spectra_accumulator = es.simulated_vals(weights)
-    return tanimoto(spectra_accumulator, es.vals(es.freq_range))
+    return tanimoto(spectra_accumulator, es.vals(es.freq_range)) + normal_distance * 1.0
 
 
 class GeneticProblem(FunctionalProblem):

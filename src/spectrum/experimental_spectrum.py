@@ -2,6 +2,7 @@ from os.path import dirname, join
 from typing import Dict, List, Tuple
 
 import numpy as np
+from overlap.metrics import tanimoto
 
 from broadening.broadening import (ecd_broaden, ir_broaden, uv_broaden,
                                    vcd_broaden)
@@ -62,6 +63,11 @@ class ExperimentalSpectrum(Spectrum):
         )
         self.broadened_vals = np.array(
             [spec.vals(self.freq_range) for spec in self.broadened.values()])
+        
+        self.correlation_weights = []
+        for candidate_broadened_vals in self.broadened_vals:
+            correlation = tanimoto(self.vals(self.freq_range), candidate_broadened_vals)
+            self.correlation_weights.append((correlation + 1) / 2)
 
     def __str__(self) -> str:
         return f"""ExperimentalSpectrum(
