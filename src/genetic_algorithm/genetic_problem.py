@@ -1,7 +1,7 @@
 from typing import Callable
 
 import numpy as np
-from scipy.stats import wasserstein_distance, spearmanr, kendalltau, pearsonr
+from scipy.stats import pearsonr
 from pymoo.problems.functional import FunctionalProblem
 
 from overlap.metrics import tanimoto
@@ -21,7 +21,7 @@ def fitness(
 
     normal_distance, _ = pearsonr(weights, es.correlation_weights)
 
-    # weights[_rng.random(len(weights)) < dropout_percentage] = 0.0
+    weights[_rng.random(len(weights)) < dropout_percentage] = 0.0
     spectra_accumulator = es.simulated_vals(weights)
     return tanimoto(spectra_accumulator, es.vals(es.freq_range)) + normal_distance * 1.0
 
