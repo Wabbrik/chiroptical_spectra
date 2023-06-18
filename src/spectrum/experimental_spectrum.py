@@ -4,8 +4,7 @@ from typing import Dict, List, Tuple
 import numpy as np
 from overlap.metrics import tanimoto
 
-from broadening.broadening import (ecd_broaden, ir_broaden, uv_broaden,
-                                   vcd_broaden)
+from broadening.broadening import ecd_broaden, ir_broaden, uv_broaden, vcd_broaden
 from spectrum.spectrum import Spectrum
 from spectrum.spectrum_type import SpectrumType
 

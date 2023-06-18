@@ -23,7 +23,7 @@ def fitness(
 
     weights[_rng.random(len(weights)) < dropout_percentage] = 0.0
     spectra_accumulator = es.simulated_vals(weights)
-    return tanimoto(spectra_accumulator, es.vals(es.freq_range)) + normal_distance * 1.0
+    return tanimoto(spectra_accumulator, es.vals(es.freq_range)) + normal_distance * 0.2
 
 
 class GeneticProblem(FunctionalProblem):
