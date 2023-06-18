@@ -4,14 +4,10 @@ import sys
 from os import getcwd
 from os.path import join
 
-import numpy as np
-
 from genetic_algorithm.genetic_algorithm import GeneticAlgorithm
 from genetic_algorithm.genetic_problem import GeneticProblem
 from parameters.input_parameters import InputParameters
 from parameters.utils import plot_results, write_results
-
-np.random.seed(123)
 
 
 def main() -> int:
