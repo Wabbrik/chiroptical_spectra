@@ -70,6 +70,6 @@ class InputParameters:
             spectrum for spectrum in self.experimental_spectra if spectrum.is_opt_candidate]
 
         def obj(x: np.array) -> float:
-            return - np.prod([fitness(x, candidate, self.energy_unit) for candidate in candidates])
+            return - np.sum([fitness(x, candidate, self.energy_unit) for candidate in candidates])
 
         return obj
