@@ -3,7 +3,7 @@ from typing import Callable
 import numpy as np
 from pymoo.problems.functional import FunctionalProblem
 
-from overlap.metrics import tanimoto
+from overlap.metrics import tanimoto, fitness_tanimoto
 from overlap.weights import boltzmann_weights
 from spectrum.experimental_spectrum import ExperimentalSpectrum
 
@@ -20,6 +20,15 @@ def fitness(
     weights[_rng.random(len(weights)) < dropout_percentage] = 0.0
     spectra_accumulator = es.simulated_vals(weights)
     return tanimoto(spectra_accumulator, es.vals(es.freq_range))
+
+
+def classic_fitness(
+    x_energies: np.ndarray,
+    es: ExperimentalSpectrum,
+    constant: str = "kcal/mol",
+) -> np.array:
+    spectra_accumulator = es.simulated_vals(boltzmann_weights(x_energies, constant))
+    return fitness_tanimoto(spectra_accumulator, es.vals(es.freq_range))
 
 
 class GeneticProblem(FunctionalProblem):

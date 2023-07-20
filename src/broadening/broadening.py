@@ -63,7 +63,7 @@ def ecd_broaden(
         intervals: List,
         **kwargs,
 ) -> Spectrum:
-    new_x, ecd_y = grid.astype(dtype=np.single), np.zeros(len(new_x), dtype=np.single)
+    new_x, ecd_y = grid.astype(dtype=np.single), np.zeros(grid.shape, dtype=np.single)
     rcp_hwhm = 1.0 / hwhm
     epsilon_constant = 1.0 / (22.94 * hwhm * sqrt(np.pi))
 
@@ -82,7 +82,7 @@ def uv_broaden(
     intervals: List,
     **kwargs,
 ) -> Spectrum:
-    new_x, uv_y = grid.astype(dtype=np.single), np.zeros(len(new_x), dtype=np.single)
+    new_x, uv_y = grid.astype(dtype=np.single), np.zeros(grid.shape, dtype=np.single)
 
     for i, x_value in enumerate(spectrum.freq()):
         energy_nm = np.full([len(new_x), ], get_scale_factor(x_value, intervals), dtype=np.single)

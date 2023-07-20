@@ -6,7 +6,7 @@ from typing import Callable, List
 import numpy as np
 
 from genetic_algorithm.genetic_algorithm import ga_map
-from genetic_algorithm.genetic_problem import fitness
+from genetic_algorithm.genetic_problem import classic_fitness, fitness
 from spectrum.experimental_spectrum import ExperimentalSpectrum
 from spectrum.spectrum_type import string_to_spectrum_type
 
@@ -71,5 +71,14 @@ class InputParameters:
 
         def obj(x: np.array) -> float:
             return - np.prod([fitness(x, candidate, self.energy_unit) for candidate in candidates])
+
+        return obj
+
+    def classic_objective_function(self) -> Callable[[np.array], float]:
+        candidates = [
+            spectrum for spectrum in self.experimental_spectra if spectrum.is_opt_candidate]
+
+        def obj(x: np.array) -> float:
+            return - np.prod([classic_fitness(x, candidate, self.energy_unit) for candidate in candidates])
 
         return obj
