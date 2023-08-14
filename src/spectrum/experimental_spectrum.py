@@ -3,10 +3,9 @@ from typing import Dict, List, Tuple
 
 import numpy as np
 
-from broadening.broadening import (ecd_broaden, ir_broaden, uv_broaden,
-                                   vcd_broaden)
+from broadening.broadening import ecd_broaden, ir_broaden, uv_broaden, vcd_broaden
 from spectrum.spectrum import Spectrum
-from spectrum.spectrum_type import SpectrumType
+from spectrum.spectrum_type import SpectrumType, prefix_by_type
 
 
 class ExperimentalSpectrum(Spectrum):
@@ -57,40 +56,14 @@ class ExperimentalSpectrum(Spectrum):
         self.scaling_factors = scaling_factors
         self.is_opt_candidate = is_opt_candidate
         self.energies = energies
-        self.broadened: Dict[str, Spectrum] = self._broaden(
-            broadening_dir, self.energies
-        )
-        self.broadened_vals = np.array(
-            [spec.vals(self.freq_range) for spec in self.broadened.values()])
-
-    def __str__(self) -> str:
-        return f"""ExperimentalSpectrum(
-                    freq={self._freq},
-                    vals={self._vals},
-                    type={self.type},
-                    hwhm={self.hwhm},
-                    freq_range={self.freq_range},
-                    scaling_factors={self.scaling_factors},
-                    optimise={self.is_opt_candidate},
-                    energies={self.energies}
-                )"""
-
-    def energies_array(self) -> np.ndarray:
-        return np.array(list(self.energies.values()), dtype=np.float64)
+        self.broadened: Dict[str, Spectrum] = self._broaden(broadening_dir, energies)
+        self.broadened_vals = np.array([spec.vals(self.freq_range) for spec in self.broadened.values()])
 
     def write_broadened(self, dir: str) -> None:
         for fname, spectrum in self.broadened.items():
             spectrum.write(join(dir, f"{fname}.dat"))
 
     def _broaden(self, dirpath: str, energies: Dict[str, float]) -> Dict[str, Spectrum]:
-        return {
-            fname: self.broaden_delegate(
-                s=Spectrum.from_path(join(dirpath, fname))
-            )
-            for fname in list(energies.keys())
-        }
-
-    def broaden_delegate(self, s: Spectrum) -> Spectrum:
         broaden_funcs = {
             SpectrumType.VCD: vcd_broaden,
             SpectrumType.IR: ir_broaden,
@@ -98,13 +71,16 @@ class ExperimentalSpectrum(Spectrum):
             SpectrumType.UV: uv_broaden,
         }
 
-        broaden_func = broaden_funcs.get(self.type)
-        if broaden_func is None:
-            raise ValueError(f"Unknown spectrum type: {self.type}")
-
-        return broaden_func(
-            spectrum=s, freq_range=self.freq_range, hwhm=self.hwhm, grid=self.freq(), intervals=self.scaling_factors
-        ) * self.mirroring_option
+        return {
+            fname: broaden_funcs[self.type](
+                spectrum=Spectrum.from_path(join(dirpath, (f"{prefix_by_type[self.type]}{fname}"))),
+                freq_range=self.freq_range,
+                hwhm=self.hwhm,
+                grid=self.freq(),
+                intervals=self.scaling_factors,
+            ) * self.mirroring_option
+            for fname in energies
+        }
 
     def simulated_vals(self, weights: np.ndarray) -> np.ndarray:
         return weights @ self.broadened_vals

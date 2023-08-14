@@ -25,20 +25,8 @@ def main() -> int:
     print(f"Runtime was: {res.exec_time:.2f} seconds.")
 
     if not ip.skip_print:
-        write_results(
-            path=getcwd(),
-            fitness=res.F[0],
-            experimental_spectra=ip.experimental_spectra,
-            energies=res.X,
-            constant=ip.energy_unit
-        )
-
-        plot_results(
-            path=getcwd(),
-            experimental_spectra=ip.experimental_spectra,
-            energies=res.X,
-            constant=ip.energy_unit
-        )
+        write_results(path=getcwd(), fitness=res.F[0], key_energies=ip.energies, energies=res.X, constant=ip.eu)
+        plot_results(path=getcwd(), experimental_spectra=ip.candidates, energies=res.X, constant=ip.eu)
 
     return 0
 

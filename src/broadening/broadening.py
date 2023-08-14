@@ -9,7 +9,10 @@ from spectrum.spectrum import Spectrum
 
 def get_scale_factor(freq_value: float, scaling_factors: list) -> float:
     """Given a list of shape ((1, 3), n) where [lower, upper, scale_value]"""
-    return next((freq_value * scale for lower, upper, scale in scaling_factors if lower < freq_value <= upper), freq_value)
+    return next(
+        (freq_value * scale for lower, upper, scale in scaling_factors if lower < freq_value <= upper),
+        freq_value,
+    )
 
 
 def vcd_broaden(

@@ -26,3 +26,10 @@ title_by_type = {
     SpectrumType.ECD: "$\Delta \epsilon$(M$^{-1} \cdot$ cm$^{-1}$)",
     SpectrumType.UV: "$\epsilon$(M$^{-1} \cdot$ cm$^{-1}$)",
 }
+
+prefix_by_type = {
+    SpectrumType.VCD: "rs_",
+    SpectrumType.IR: "ds_",
+    SpectrumType.ECD: "ecd_",
+    SpectrumType.UV: "uv_",
+}
