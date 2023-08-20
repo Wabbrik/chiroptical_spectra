@@ -16,7 +16,9 @@ def main() -> int:
     genetic_algorithm = GeneticAlgorithm(
         ga_type=ip.genetic_algorithm,
         genetic_problem=GeneticProblem(
-            energies=ip.energies_array(), error=ip.energy_uncertainty, objs=ip.classic_objective_function()
+            chromosome=ip.energies_array(),
+            error=ip.energy_uncertainty,
+            objs=ip.classic_objective_function(),
         )
     )
 

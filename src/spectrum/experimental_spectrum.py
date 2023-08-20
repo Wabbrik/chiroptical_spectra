@@ -2,6 +2,7 @@ from os.path import dirname, join
 from typing import Dict, List, Tuple
 
 import numpy as np
+import numpy.typing as npt
 
 from broadening.broadening import ecd_broaden, ir_broaden, uv_broaden, vcd_broaden
 from spectrum.spectrum import Spectrum
@@ -37,8 +38,8 @@ class ExperimentalSpectrum(Spectrum):
 
     def __init__(
         self,
-        freq: np.array,
-        vals: np.array,
+        freq: npt.NDArray[np.float64],
+        vals: npt.NDArray[np.float64],
         broadening_dir: str,
         type: SpectrumType,
         mirroring_option: float,
@@ -82,5 +83,5 @@ class ExperimentalSpectrum(Spectrum):
             for fname in energies
         }
 
-    def simulated_vals(self, weights: np.ndarray) -> np.ndarray:
+    def simulated_vals(self, weights: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
         return weights @ self.broadened_vals

@@ -1,4 +1,5 @@
 import numpy as np
+import numpy.typing as npt
 
 WEIGHT_FOR_CONSTANTS = 1.0 / 0.02569260860624242419
 
@@ -10,7 +11,7 @@ constants = {
 }
 
 
-def boltzmann_weights(energies: np.ndarray, constant: str) -> np.ndarray:
+def boltzmann_weights(energies: npt.NDArray[np.float64], constant: str) -> npt.NDArray[np.float64]:
     energies = energies.astype(np.float64)
     energies = np.exp((energies - np.min(energies)) * constants[constant])
     rcp_energies = 1 / energies

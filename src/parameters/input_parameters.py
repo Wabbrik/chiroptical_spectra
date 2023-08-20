@@ -4,6 +4,7 @@ from os.path import dirname, join
 from typing import Callable, List
 
 import numpy as np
+import numpy.typing as npt
 
 from genetic_algorithm.genetic_algorithm import ga_map
 from genetic_algorithm.genetic_problem import classic_fitness, fitness
@@ -58,17 +59,17 @@ class InputParameters:
     def candidates(self):
         return [spectrum for spectrum in self.experimental_spectra if spectrum.is_opt_candidate]
 
-    def energies_array(self) -> np.ndarray:
+    def energies_array(self) -> npt.NDArray[np.float64]:
         return np.array(list(self.energies.values()), dtype=np.float64)
 
     def objective_function(self) -> Callable[[np.array], float]:
-        def obj(x: np.array) -> float:
+        def obj(x: npt.NDArray[np.float64]) -> float:
             return - np.prod([fitness(x, candidate, self.eu) for candidate in self.candidates])
 
         return obj
 
     def classic_objective_function(self) -> Callable[[np.array], float]:
-        def obj(x: np.array) -> float:
+        def obj(x: npt.NDArray[np.float64]) -> float:
             return - np.prod([classic_fitness(x, candidate, self.eu) for candidate in self.candidates])
 
         return obj

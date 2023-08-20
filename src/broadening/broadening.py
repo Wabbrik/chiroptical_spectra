@@ -3,6 +3,7 @@ from math import sqrt
 from typing import Tuple
 
 import numpy as np
+import numpy.typing as npt
 
 from spectrum.spectrum import Spectrum
 
@@ -19,7 +20,7 @@ def vcd_broaden(
         spectrum: Spectrum,
         freq_range: Tuple[float, float],
         hwhm: float,
-        grid: np.ndarray,
+        grid: npt.NDArray[np.float64],
         intervals: List
 ) -> Spectrum:
     new_x, rs_y = grid.astype(dtype=np.single), np.zeros(grid.shape, dtype=np.single)
@@ -41,7 +42,7 @@ def ir_broaden(
         spectrum: Spectrum,
         freq_range: Tuple[float, float],
         hwhm: float,
-        grid: np.ndarray,
+        grid: npt.NDArray[np.float64],
         intervals: List
 ) -> Spectrum:
     new_x, ds_y = grid.astype(dtype=np.single), np.zeros(grid.shape, dtype=np.single)
@@ -62,7 +63,7 @@ def ir_broaden(
 def ecd_broaden(
         spectrum: Spectrum,
         hwhm: float,
-        grid: np.ndarray,
+        grid: npt.NDArray[np.float64],
         intervals: List,
         **kwargs,
 ) -> Spectrum:
@@ -81,7 +82,7 @@ def ecd_broaden(
 def uv_broaden(
     spectrum: Spectrum,
     hwhm: float,
-    grid: np.ndarray,
+    grid: npt.NDArray[np.float64],
     intervals: List,
     **kwargs,
 ) -> Spectrum:
