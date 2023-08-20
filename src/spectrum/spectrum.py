@@ -2,6 +2,7 @@ from functools import lru_cache
 from typing import Tuple
 
 import numpy as np
+import numpy.typing as npt
 
 
 class Spectrum:
@@ -10,7 +11,7 @@ class Spectrum:
         data = np.loadtxt(path, dtype=np.float64)
         return cls(freq=data[:, 0], vals=data[:, 1])
 
-    def __init__(self, freq: np.array, vals: np.array) -> None:
+    def __init__(self, freq: npt.NDArray[np.float64], vals: npt.NDArray[np.float64]) -> None:
         self._freq = freq.astype(np.float64)
         self._vals = vals.astype(np.float64)
 
@@ -31,13 +32,13 @@ class Spectrum:
         return self
 
     @lru_cache(maxsize=2)
-    def vals(self, freq_range: Tuple[float, float] = None) -> np.ndarray:
+    def vals(self, freq_range: Tuple[float, float] = None) -> npt.NDArray[np.float64]:
         if freq_range is None:
             return self._vals
         start, end = sorted(freq_range)
         return self._vals[(self._freq >= start) & (self._freq <= end)]
 
-    def freq(self, freq_range: Tuple[float, float] = None) -> np.ndarray:
+    def freq(self, freq_range: Tuple[float, float] = None) -> npt.NDArray[np.float64]:
         if freq_range is None:
             return self._freq
         start, end = sorted(freq_range)

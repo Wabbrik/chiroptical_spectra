@@ -26,7 +26,6 @@ ga_map = {
 
 
 class GeneticAlgorithm:
-
     def __init__(self, ga_type: str, genetic_problem: GeneticProblem) -> None:
         self.problem = genetic_problem
         self.algorithm_type = ga_map[ga_type]
@@ -41,7 +40,5 @@ class GeneticAlgorithm:
                 pbar.update(1)
 
     def run(self, **kwargs) -> Result:
-        res: Result = minimize(
-            self.problem, self.algorithm_type, seed=SEED, verbose=True, **kwargs
-        )
+        res: Result = minimize(self.problem, self.algorithm_type, seed=SEED, verbose=True, **kwargs)
         return res
