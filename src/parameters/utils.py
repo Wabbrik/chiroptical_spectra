@@ -12,18 +12,12 @@ from spectrum.spectrum_type import title_by_type
 
 
 def commit_mapping_to_file(fpath: str, mapping: Dict[any, float]):
-    with open(fpath, 'w') as f:
+    with open(fpath, "w") as f:
         for key, value in mapping.items():
             f.write(f"{key} {value:.4f}\n")
 
 
-def write_results(
-        path: str,
-        fitness: float,
-        key_energies: List[str],
-        energies: List[float],
-        constant: float
-) -> None:
+def write_results(path: str, fitness: float, key_energies: List[str], energies: List[float], constant: float) -> None:
     for name, values in [("gaEs", energies), ("gaBWs", boltzmann_weights(energies, constant))]:
         try:
             commit_mapping_to_file(file_path := join(path, f"{name}{-fitness:.3f}"), dict(zip(key_energies, values)))
@@ -34,9 +28,12 @@ def write_results(
 
 def exp_spectrum_plot(path: str, spectrum: ExperimentalSpectrum, energies: List[float], constant: float) -> None:
     plt.figure(figsize=(10, 6))
-    plt.plot(spectrum.freq(spectrum.freq_range), spectrum.vals(spectrum.freq_range), color='k')
-    plt.plot(spectrum.freq(spectrum.freq_range), sim := spectrum.simulated_vals(
-        boltzmann_weights(energies, constant)), color='r')
+    plt.plot(spectrum.freq(spectrum.freq_range), spectrum.vals(spectrum.freq_range), color="k")
+    plt.plot(
+        spectrum.freq(spectrum.freq_range),
+        sim := spectrum.simulated_vals(boltzmann_weights(energies, constant)),
+        color="r",
+    )
     tsi = tanimoto(sim, spectrum.vals(spectrum.freq_range))
     plt.legend([f"{spectrum.type.name} Experiment", "GA-VCD Boltzmann average"])
     plt.title(f"TSI: {tsi:1.3f}")
@@ -47,6 +44,8 @@ def exp_spectrum_plot(path: str, spectrum: ExperimentalSpectrum, energies: List[
     plt.show()
 
 
-def plot_results(path: str, experimental_spectra: List[ExperimentalSpectrum], energies: List[float], constant: float) -> None:
+def plot_results(
+    path: str, experimental_spectra: List[ExperimentalSpectrum], energies: List[float], constant: float
+) -> None:
     for spectrum in experimental_spectra:
         exp_spectrum_plot(path, spectrum, energies, constant)

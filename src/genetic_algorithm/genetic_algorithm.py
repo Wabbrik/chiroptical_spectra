@@ -15,13 +15,13 @@ from genetic_algorithm.hyperparameter import hyperoptimizable, hyperparameter_op
 from genetic_algorithm.seed import SEED
 
 ga_map = {
-    "GA":             GA(pop_size=500),
-    "BRKGA":          BRKGA(),
-    "DE":             DE(),
-    "NEDLER_MEAD":    NelderMead(),
-    "PSO":            PSO(),
+    "GA": GA(pop_size=500),
+    "BRKGA": BRKGA(),
+    "DE": DE(),
+    "NEDLER_MEAD": NelderMead(),
+    "PSO": PSO(),
     "PATTERN_SEARCH": PatternSearch(),
-    "ES":             ES(),
+    "ES": ES(),
 }
 
 

@@ -1,4 +1,3 @@
-
 import json
 from os.path import dirname, join
 from typing import Callable, List
@@ -52,7 +51,7 @@ class InputParameters:
         if (ga := self.params.get("genetic_algorithm")) in ga_map:
             return ga
         else:
-            valid_gas = ', '.join(ga_map.keys())
+            valid_gas = ", ".join(ga_map.keys())
             raise KeyError(f'Invalid genetic algorithm "{ga}". Valid options are: {valid_gas}')
 
     @property
@@ -61,15 +60,3 @@ class InputParameters:
 
     def energies_array(self) -> npt.NDArray[np.float64]:
         return np.array(list(self.energies.values()), dtype=np.float64)
-
-    def objective_function(self) -> Callable[[np.array], float]:
-        def obj(x: npt.NDArray[np.float64]) -> float:
-            return - np.prod([fitness(x, candidate, self.eu) for candidate in self.candidates])
-
-        return obj
-
-    def classic_objective_function(self) -> Callable[[np.array], float]:
-        def obj(x: npt.NDArray[np.float64]) -> float:
-            return - np.prod([classic_fitness(x, candidate, self.eu) for candidate in self.candidates])
-
-        return obj

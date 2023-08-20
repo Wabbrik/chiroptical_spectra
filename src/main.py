@@ -5,7 +5,8 @@ from os import getcwd
 from os.path import join
 
 from genetic_algorithm.genetic_algorithm import GeneticAlgorithm
-from genetic_algorithm.genetic_problem import GeneticProblem
+from genetic_algorithm.genetic_problem import GeneticProblem, classic_fitness
+from objective.classic_objective import ClassicObjective
 from parameters.input_parameters import InputParameters
 from parameters.utils import plot_results, write_results
 
@@ -16,10 +17,10 @@ def main() -> int:
     genetic_algorithm = GeneticAlgorithm(
         ga_type=ip.genetic_algorithm,
         genetic_problem=GeneticProblem(
-            chromosome=ip.energies_array(),
-            error=ip.energy_uncertainty,
-            objs=ip.classic_objective_function(),
-        )
+            objective=ClassicObjective(
+                ip.energies_array(), ip.candidates, ip.energy_uncertainty, ip.eu, classic_fitness
+            )
+        ),
     )
 
     res = genetic_algorithm.run()
@@ -33,5 +34,5 @@ def main() -> int:
     return 0
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main())

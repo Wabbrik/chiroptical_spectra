@@ -16,7 +16,7 @@ class Spectrum:
         self._vals = vals.astype(np.float64)
 
     def __str__(self) -> str:
-        return f'Spectrum(freq={self._freq}, vals={self._vals})'
+        return f"Spectrum(freq={self._freq}, vals={self._vals})"
 
     def __repr__(self) -> str:
         return self.__str__()
@@ -45,6 +45,5 @@ class Spectrum:
         return self._freq[(self._freq >= start) & (self._freq <= end)]
 
     def write(self, path: str) -> None:
-        with open(path, mode='w', encoding="utf8") as file:
-            file.write(
-                '\n'.join(f'{x:<10.8f} {y:>10.8f}' for x, y in zip(self._freq, self._vals)))
+        with open(path, mode="w", encoding="utf8") as file:
+            file.write("\n".join(f"{x:<10.8f} {y:>10.8f}" for x, y in zip(self._freq, self._vals)))

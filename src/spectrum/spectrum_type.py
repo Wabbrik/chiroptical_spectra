@@ -9,15 +9,15 @@ class SpectrumType(Enum):
 
 
 def string_to_spectrum_type(string: str) -> SpectrumType:
-    if string == 'VCD':
+    if string == "VCD":
         return SpectrumType.VCD
-    if string == 'IR':
+    if string == "IR":
         return SpectrumType.IR
-    if string == 'ECD':
+    if string == "ECD":
         return SpectrumType.ECD
-    if string == 'UV':
+    if string == "UV":
         return SpectrumType.UV
-    raise ValueError(f'Unknown spectrum type: {string}')
+    raise ValueError(f"Unknown spectrum type: {string}")
 
 
 title_by_type = {

@@ -3,6 +3,7 @@ from typing import Callable
 import numpy as np
 import numpy.typing as npt
 from pymoo.problems.functional import FunctionalProblem
+from objective.objective import Objective
 
 from overlap.metrics import tanimoto, fitness_tanimoto
 from overlap.weights import boltzmann_weights
@@ -15,7 +16,7 @@ def fitness(
     x_energies: npt.NDArray[np.float64],
     es: ExperimentalSpectrum,
     constant: str = "kcal/mol",
-    dropout_percentage: float = 0.08
+    dropout_percentage: float = 0.08,
 ) -> npt.NDArray[np.float64]:
     weights = boltzmann_weights(x_energies, constant)
     weights[_rng.random(len(weights)) < dropout_percentage] = 0.0
@@ -33,6 +34,5 @@ def classic_fitness(
 
 
 class GeneticProblem(FunctionalProblem):
-    def __init__(self, chromosome: npt.NDArray[np.float64], error: float, objs: Callable[[npt.NDArray[np.float64]], float]):
-        x_l, x_u = chromosome - error, chromosome + error
-        super().__init__(n_var=len(chromosome), objs=objs, xl=x_l, xu=x_u, type_var=float)
+    def __init__(self, objective: Objective):
+        super().__init__(n_var=objective.n_var, objs=objective, xl=objective.lower, xu=objective.upper, type_var=float)

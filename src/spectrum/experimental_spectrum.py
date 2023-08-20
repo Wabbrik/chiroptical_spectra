@@ -20,7 +20,7 @@ class ExperimentalSpectrum(Spectrum):
         freq_range: Tuple[float, float],
         scaling_factors: List[List[float]],
         is_opt_candidate: bool,
-        energies: Dict[str, float]
+        energies: Dict[str, float],
     ) -> "ExperimentalSpectrum":
         data = np.loadtxt(path, dtype=np.float64)
         return cls(
@@ -33,7 +33,7 @@ class ExperimentalSpectrum(Spectrum):
             freq_range=freq_range,
             scaling_factors=scaling_factors,
             is_opt_candidate=is_opt_candidate,
-            energies=energies
+            energies=energies,
         )
 
     def __init__(
@@ -47,7 +47,7 @@ class ExperimentalSpectrum(Spectrum):
         freq_range: Tuple[float, float],
         scaling_factors: List[List[float]],
         is_opt_candidate: bool,
-        energies: Dict[str, float]
+        energies: Dict[str, float],
     ) -> None:
         super().__init__(freq, vals)
         self.type = type
@@ -79,7 +79,8 @@ class ExperimentalSpectrum(Spectrum):
                 hwhm=self.hwhm,
                 grid=self.freq(),
                 intervals=self.scaling_factors,
-            ) * self.mirroring_option
+            )
+            * self.mirroring_option
             for fname in energies
         }
 
