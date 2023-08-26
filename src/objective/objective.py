@@ -22,6 +22,10 @@ class Objective(ABC):
     def upper(self) -> npt.NDArray[np.float64]:
         raise NotImplementedError()
 
+    @abstractmethod
+    def get_chromosome(self, x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
+        raise NotImplementedError()
+
     @property
     @abstractmethod
     def n_var(self) -> int:
