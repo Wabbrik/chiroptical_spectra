@@ -2,6 +2,7 @@ from enum import Enum, auto
 
 
 class SpectrumType(Enum):
+    ROA = auto()
     VCD = auto()
     IR = auto()
     ECD = auto()
@@ -9,6 +10,8 @@ class SpectrumType(Enum):
 
 
 def string_to_spectrum_type(string: str) -> SpectrumType:
+    if string == "ROA":
+        return SpectrumType.ROA
     if string == "VCD":
         return SpectrumType.VCD
     if string == "IR":
@@ -21,6 +24,7 @@ def string_to_spectrum_type(string: str) -> SpectrumType:
 
 
 title_by_type = {
+    SpectrumType.ROA: "$\Delta \epsilon$(M$^{-1} \cdot$ cm$^{-1}$)",
     SpectrumType.VCD: "$\Delta \epsilon$(M$^{-1} \cdot$ cm$^{-1}$)",
     SpectrumType.IR: "$\epsilon$(M$^{-1} \cdot$ cm$^{-1}$)",
     SpectrumType.ECD: "$\Delta \epsilon$(M$^{-1} \cdot$ cm$^{-1}$)",
@@ -28,6 +32,7 @@ title_by_type = {
 }
 
 prefix_by_type = {
+    SpectrumType.ROA: "roa_",
     SpectrumType.VCD: "rs_",
     SpectrumType.IR: "ds_",
     SpectrumType.ECD: "ecd_",

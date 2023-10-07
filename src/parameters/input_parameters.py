@@ -20,6 +20,8 @@ class InputParameters:
                 path=join(dirname(path), spectrum_data["file"]),
                 type=string_to_spectrum_type(spectrum_data["type"]),
                 mirroring_option=spectrum_data["mirroring_option"],
+                path_length=spectrum_data["path_length"],
+                molar_concentration=spectrum_data["molar_concentration"],
                 hwhm=spectrum_data["hwhm"],
                 freq_range=tuple(spectrum_data["interval"]),
                 scaling_factors=spectrum_data["scaling_factors"],

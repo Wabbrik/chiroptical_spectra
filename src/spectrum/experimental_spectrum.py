@@ -16,6 +16,8 @@ class ExperimentalSpectrum(Spectrum):
         path: str,
         type: SpectrumType,
         mirroring_option: float,
+        path_length: float,
+        molar_concentration: float,
         hwhm: float,
         freq_range: Tuple[float, float],
         scaling_factors: List[List[float]],
@@ -29,6 +31,8 @@ class ExperimentalSpectrum(Spectrum):
             broadening_dir=dirname(path),
             type=type,
             mirroring_option=mirroring_option,
+            path_length=path_length,
+            molar_concentration=molar_concentration,
             hwhm=hwhm,
             freq_range=freq_range,
             scaling_factors=scaling_factors,
@@ -43,6 +47,8 @@ class ExperimentalSpectrum(Spectrum):
         broadening_dir: str,
         type: SpectrumType,
         mirroring_option: float,
+        path_length: float,
+        molar_concentration: float,
         hwhm: float,
         freq_range: Tuple[float, float],
         scaling_factors: List[List[float]],
@@ -52,6 +58,8 @@ class ExperimentalSpectrum(Spectrum):
         super().__init__(freq, vals)
         self.type = type
         self.mirroring_option = mirroring_option
+        self.path_length = path_length
+        self.molar_concentration = molar_concentration
         self.hwhm = hwhm
         self.freq_range = freq_range
         self.scaling_factors = scaling_factors
@@ -66,6 +74,7 @@ class ExperimentalSpectrum(Spectrum):
 
     def _broaden(self, dirpath: str, energies: Dict[str, float]) -> Dict[str, Spectrum]:
         broaden_funcs = {
+            SpectrumType.ROA: ir_broaden,
             SpectrumType.VCD: vcd_broaden,
             SpectrumType.IR: ir_broaden,
             SpectrumType.ECD: ecd_broaden,
@@ -81,6 +90,7 @@ class ExperimentalSpectrum(Spectrum):
                 intervals=self.scaling_factors,
             )
             * self.mirroring_option
+            * (1 / (self.path_length * self.molar_concentration))
             for fname in energies
         }
 
