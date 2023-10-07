@@ -1,8 +1,9 @@
-from typing import Callable, List
+from typing import Any, Callable, List
 
 import numpy as np
 import numpy.typing as npt
-from scipy.cluster.hierarchy import cut_tree, linkage
+from matplotlib import pyplot as plt
+from scipy.cluster.hierarchy import cut_tree, dendrogram, linkage
 
 from objective.objective import Objective
 from spectrum.experimental_spectrum import ExperimentalSpectrum
@@ -19,6 +20,7 @@ class ClusteringObjective(Objective):
         reference_candidate: ExperimentalSpectrum,
         cluster_metric: Callable[[npt.NDArray[np.float64], npt.NDArray[np.float64]], float],
         cut_point: float,
+        draw_dendrogram: bool,
     ) -> None:
         self._energies_array = energies_array
         self._optimization_candidates = candidates
@@ -33,9 +35,23 @@ class ClusteringObjective(Objective):
             height=cut_point,
         ).reshape(-1)
 
+        if draw_dendrogram:
+            self.draw_dendrogram(
+                list(reference_candidate.broadened),
+                linkage(
+                    reference_candidate.broadened_vals, metric=cluster_metric, method="complete", optimal_ordering=False
+                ),
+                cut_point,
+            )
+
         self.chromosome = np.array(
             [np.mean(self._energies_array[self.clusters == cluster]) for cluster in np.sort(np.unique(self.clusters))]
         )
+
+    def draw_dendrogram(self, labels: List[str], linkage: Any, cut_point: float):
+        plt.axhline(y=cut_point, c="k", linewidth=0.5)
+        dendrogram(linkage, labels=labels, leaf_rotation=90)
+        plt.show()
 
     @property
     def lower(self) -> npt.NDArray[np.float64]:

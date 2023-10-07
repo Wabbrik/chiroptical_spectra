@@ -10,7 +10,7 @@ from genetic_algorithm.genetic_algorithm import GeneticAlgorithm
 from genetic_algorithm.genetic_problem import GeneticProblem, classic_fitness
 from objective.classic_objective import ClassicObjective
 from objective.clustering_objective import ClusteringObjective
-from overlap.metrics import fitness_tanimoto
+from overlap.metrics import dendrogram_tanimoto, fitness_tanimoto
 from parameters.input_parameters import InputParameters
 from parameters.utils import plot_results, write_results
 
@@ -25,8 +25,9 @@ def main() -> int:
             ip.eu,
             classic_fitness,
             reference_candidate=ip.candidates[0],
-            cluster_metric=fitness_tanimoto,
-            cut_point=0.2,
+            cluster_metric=dendrogram_tanimoto,
+            cut_point=ip.dendrogram_threshold,
+            draw_dendrogram=ip.draw_dendrogram,
         ),
         "classic": ClassicObjective(
             ip.energies_array(),

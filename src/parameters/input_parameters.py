@@ -32,6 +32,14 @@ class InputParameters:
         ]
 
     @property
+    def draw_dendrogram(self) -> float:
+        return self.params["draw_dendrogram"]
+
+    @property
+    def dendrogram_threshold(self) -> float:
+        return self.params["dendrogram_threshold"]
+
+    @property
     def termination_criterion_ngen(self) -> float:
         return self.params["termination_criterion(ngen)"]
 
