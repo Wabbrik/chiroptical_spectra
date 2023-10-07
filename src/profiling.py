@@ -1,5 +1,8 @@
-import cProfile, io, pstats
+import cProfile
+import io
+import pstats
 from pstats import SortKey
+
 import main
 
 with cProfile.Profile() as pr:

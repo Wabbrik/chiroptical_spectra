@@ -40,12 +40,10 @@ class GeneticAlgorithm:
                 pbar.update(1)
 
     def run(self, **kwargs) -> Result:
-        res: Result = minimize(
+        return minimize(
             self.problem,
             self.algorithm_type,
-            termination=None,
             seed=SEED,
             verbose=True,
             **kwargs,
         )
-        return res

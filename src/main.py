@@ -4,6 +4,8 @@ import sys
 from os import getcwd
 from os.path import join
 
+from pymoo.termination import get_termination
+
 from genetic_algorithm.genetic_algorithm import GeneticAlgorithm
 from genetic_algorithm.genetic_problem import GeneticProblem, classic_fitness
 from objective.classic_objective import ClassicObjective
@@ -15,34 +17,30 @@ from parameters.utils import plot_results, write_results
 
 def main() -> int:
     ip = InputParameters(path=join(getcwd(), "GA_Analysis_File.json"))
+    objectives = {
+        "clustering": ClusteringObjective(
+            ip.energies_array(),
+            ip.candidates,
+            ip.energy_uncertainty,
+            ip.eu,
+            classic_fitness,
+            reference_candidate=ip.candidates[0],
+            cluster_metric=fitness_tanimoto,
+            cut_point=0.2,
+        ),
+        "classic": ClassicObjective(
+            ip.energies_array(),
+            ip.candidates,
+            ip.energy_uncertainty,
+            ip.eu,
+            classic_fitness,
+        ),
+    }
 
-    clustering_objective = ClusteringObjective(
-        ip.energies_array(),
-        ip.candidates,
-        ip.energy_uncertainty,
-        ip.eu,
-        classic_fitness,
-        reference_candidate=ip.candidates[0],
-        cluster_metric=fitness_tanimoto,
-        cut_point=0.2,
-    )
-
-    classic_objective = ClassicObjective(
-        ip.energies_array(),
-        ip.candidates,
-        ip.energy_uncertainty,
-        ip.eu,
-        classic_fitness,
-    )
-
-    objective = clustering_objective
-
-    genetic_algorithm = GeneticAlgorithm(
+    res = GeneticAlgorithm(
         ga_type=ip.genetic_algorithm,
-        genetic_problem=GeneticProblem(objective),
-    )
-
-    res = genetic_algorithm.run()
+        genetic_problem=GeneticProblem(objectives[ip.objective]),
+    ).run(termination=get_termination("n_gen", ip.termination_criterion_ngen))
 
     print(f"Runtime was: {res.exec_time:.2f} seconds.")
 
@@ -51,13 +49,13 @@ def main() -> int:
             path=getcwd(),
             fitness=res.F[0],
             key_energies=ip.energies,
-            energies=objective.get_chromosome(res.X),
+            energies=objectives[ip.objective].get_chromosome(res.X),
             constant=ip.eu,
         )
         plot_results(
             path=getcwd(),
             experimental_spectra=ip.candidates,
-            energies=objective.get_chromosome(res.X),
+            energies=objectives[ip.objective].get_chromosome(res.X),
             constant=ip.eu,
         )
 
