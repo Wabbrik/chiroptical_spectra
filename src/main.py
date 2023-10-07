@@ -3,6 +3,7 @@ import env  # isort:skip
 import sys
 from os import getcwd
 from os.path import join
+from typing import Dict, Union
 
 from pymoo.termination import get_termination
 
@@ -10,14 +11,14 @@ from genetic_algorithm.genetic_algorithm import GeneticAlgorithm
 from genetic_algorithm.genetic_problem import GeneticProblem, classic_fitness
 from objective.classic_objective import ClassicObjective
 from objective.clustering_objective import ClusteringObjective
-from overlap.metrics import dendrogram_tanimoto, fitness_tanimoto
+from overlap.metrics import dendrogram_tanimoto
 from parameters.input_parameters import InputParameters
 from parameters.utils import plot_results, write_results
 
 
 def main() -> int:
     ip = InputParameters(path=join(getcwd(), "GA_Analysis_File.json"))
-    objectives = {
+    objectives: Dict[str, Union[ClusteringObjective, ClassicObjective]] = {
         "clustering": ClusteringObjective(
             ip.energies_array(),
             ip.candidates,
