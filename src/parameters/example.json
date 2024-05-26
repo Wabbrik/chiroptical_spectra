@@ -20,9 +20,24 @@
             "path_length": 1.0,
             "molar_concentration": 1.0,
             "hwhm": 6.0,
-            "interval": [950, 1850],
-            "scaling_factors": [[900, 1600, 1.020], [1600 , 1900 , 1.000]],
-            "optimise": true
+            "interval": [
+                950,
+                1850
+            ],
+            "scaling_factors": [
+                [
+                    900,
+                    1600,
+                    1.020
+                ],
+                [
+                    1600,
+                    1900,
+                    1.000
+                ]
+            ],
+            "optimise": true,
+            "reference_dendrogram": true
         },
         {
             "file": "IR_EXP",
@@ -31,9 +46,24 @@
             "path_length": 1.0,
             "molar_concentration": 1.0,
             "hwhm": 6.0,
-            "interval": [950, 1850],
-            "scaling_factors": [[900, 1600, 1.020], [1600 , 1900 , 1.000]],
-            "optimise": true
+            "interval": [
+                950,
+                1850
+            ],
+            "scaling_factors": [
+                [
+                    900,
+                    1600,
+                    1.020
+                ],
+                [
+                    1600,
+                    1900,
+                    1.000
+                ]
+            ],
+            "optimise": true,
+            "reference_dendrogram": false
         }
     ]
- }
+}

@@ -13,7 +13,7 @@ from objective.classic_objective import ClassicObjective
 from objective.clustering_objective import ClusteringObjective
 from overlap.metrics import dendrogram_tanimoto
 from parameters.input_parameters import InputParameters
-from parameters.utils import plot_results, write_results
+from parameters.utils import draw_dendrogram, plot_results, write_dendrogram_data, write_results
 
 
 def main() -> int:
@@ -25,10 +25,9 @@ def main() -> int:
             ip.energy_uncertainty,
             ip.eu,
             classic_fitness,
-            reference_candidate=ip.candidates[0],
+            reference_candidate=ip.reference_candidate,
             cluster_metric=dendrogram_tanimoto,
             cut_point=ip.dendrogram_threshold,
-            draw_dendrogram=ip.draw_dendrogram,
         ),
         "classic": ClassicObjective(
             ip.energies_array(),
@@ -38,6 +37,12 @@ def main() -> int:
             classic_fitness,
         ),
     }
+
+    if ip.draw_dendrogram:
+        dendro = draw_dendrogram(
+            list(ip.reference_candidate.broadened), objectives["clustering"].linkage, ip.dendrogram_threshold
+        )
+        write_dendrogram_data(dendro, join(getcwd(), "dendrogram_ordering.txt"))
 
     res = GeneticAlgorithm(
         ga_type=ip.genetic_algorithm,

@@ -22,6 +22,7 @@ class ExperimentalSpectrum(Spectrum):
         freq_range: Tuple[float, float],
         scaling_factors: List[List[float]],
         is_opt_candidate: bool,
+        is_reference_candidate: bool,
         energies: Dict[str, float],
     ) -> "ExperimentalSpectrum":
         data = np.loadtxt(path, dtype=np.float64)
@@ -37,6 +38,7 @@ class ExperimentalSpectrum(Spectrum):
             freq_range=freq_range,
             scaling_factors=scaling_factors,
             is_opt_candidate=is_opt_candidate,
+            is_reference_candidate=is_reference_candidate,
             energies=energies,
         )
 
@@ -53,6 +55,7 @@ class ExperimentalSpectrum(Spectrum):
         freq_range: Tuple[float, float],
         scaling_factors: List[List[float]],
         is_opt_candidate: bool,
+        is_reference_candidate: bool,
         energies: Dict[str, float],
     ) -> None:
         super().__init__(freq, vals)
@@ -64,6 +67,7 @@ class ExperimentalSpectrum(Spectrum):
         self.freq_range = freq_range
         self.scaling_factors = scaling_factors
         self.is_opt_candidate = is_opt_candidate
+        self.is_reference_candidate = is_reference_candidate
         self.energies = energies
         self.broadened: Dict[str, Spectrum] = self._broaden(broadening_dir, energies)
         self.broadened_vals = np.array([spec.vals(self.freq_range) for spec in self.broadened.values()])

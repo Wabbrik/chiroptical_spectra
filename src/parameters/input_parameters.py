@@ -1,4 +1,5 @@
 import json
+from functools import cached_property
 from os.path import dirname, join
 from typing import Dict, List
 
@@ -26,10 +27,13 @@ class InputParameters:
                 freq_range=tuple(spectrum_data["interval"]),
                 scaling_factors=spectrum_data["scaling_factors"],
                 is_opt_candidate=spectrum_data["optimise"],
+                is_reference_candidate=spectrum_data["reference_dendrogram"],
                 energies=self.energies,
             )
             for spectrum_data in self.params["spectra_data"]
         ]
+
+        assert 1 == sum(1 for spectrum in self.experimental_spectra if spectrum.is_reference_candidate)
 
     @property
     def draw_dendrogram(self) -> float:
@@ -70,9 +74,13 @@ class InputParameters:
         else:
             raise KeyError(f'Invalid genetic algorithm "{ga}". Valid options are: {list(ga_map)}')
 
-    @property
+    @cached_property
     def candidates(self) -> List[ExperimentalSpectrum]:
         return [spectrum for spectrum in self.experimental_spectra if spectrum.is_opt_candidate]
+
+    @cached_property
+    def reference_candidate(self) -> ExperimentalSpectrum:
+        return next(spectrum for spectrum in self.experimental_spectra if spectrum.is_reference_candidate)
 
     def energies_array(self) -> npt.NDArray[np.float64]:
         return np.array(list(self.energies.values()), dtype=np.float64)

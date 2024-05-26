@@ -20,38 +20,19 @@ class ClusteringObjective(Objective):
         reference_candidate: ExperimentalSpectrum,
         cluster_metric: Callable[[npt.NDArray[np.float64], npt.NDArray[np.float64]], float],
         cut_point: float,
-        draw_dendrogram: bool,
     ) -> None:
         self._energies_array = energies_array
         self._optimization_candidates = candidates
         self._error = error
         self._eu = energy_unit
         self.fitness = fitness_function
-
-        self.clusters = cut_tree(
-            Z=linkage(
-                reference_candidate.broadened_vals, metric=cluster_metric, method="complete", optimal_ordering=False
-            ),
-            height=cut_point,
-        ).reshape(-1)
-
-        if draw_dendrogram:
-            self.draw_dendrogram(
-                list(reference_candidate.broadened),
-                linkage(
-                    reference_candidate.broadened_vals, metric=cluster_metric, method="complete", optimal_ordering=False
-                ),
-                cut_point,
-            )
-
+        self.linkage = linkage(
+            reference_candidate.broadened_vals, metric=cluster_metric, method="complete", optimal_ordering=False
+        )
+        self.clusters = cut_tree(Z=self.linkage, height=cut_point).reshape(-1)
         self.chromosome = np.array(
             [np.mean(self._energies_array[self.clusters == cluster]) for cluster in np.sort(np.unique(self.clusters))]
         )
-
-    def draw_dendrogram(self, labels: List[str], linkage: Any, cut_point: float):
-        plt.axhline(y=cut_point, c="k", linewidth=0.5)
-        dendrogram(linkage, labels=labels, leaf_rotation=90)
-        plt.show()
 
     @property
     def lower(self) -> npt.NDArray[np.float64]:

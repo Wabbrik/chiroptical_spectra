@@ -1,9 +1,8 @@
-import re
 from os.path import join
-from typing import Dict, List
+from typing import Any, Dict, List
 
-import numpy as np
 from matplotlib import pyplot as plt
+from scipy.cluster.hierarchy import dendrogram
 
 from overlap.metrics import tanimoto
 from overlap.weights import boltzmann_weights
@@ -49,3 +48,16 @@ def plot_results(
 ) -> None:
     for spectrum in experimental_spectra:
         exp_spectrum_plot(path, spectrum, energies, constant)
+
+
+def draw_dendrogram(labels: List[str], linkage: Any, cut_point: float) -> Dict[str, Any]:
+    plt.axhline(y=cut_point, c="k", linewidth=0.5)
+    dendro = dendrogram(linkage, labels=labels, leaf_rotation=90)
+    plt.show()
+    return dendro
+
+
+def write_dendrogram_data(dendro: Dict[str, Any], path: str) -> None:
+    with open(path, "w") as f:
+        for line in dendro["ivl"]:
+            f.write(f"{line}\n")
