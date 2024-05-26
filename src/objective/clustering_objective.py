@@ -1,9 +1,8 @@
-from typing import Any, Callable, List
+from typing import Callable, List
 
 import numpy as np
 import numpy.typing as npt
-from matplotlib import pyplot as plt
-from scipy.cluster.hierarchy import cut_tree, dendrogram, linkage
+from scipy.cluster.hierarchy import cut_tree, linkage
 
 from objective.objective import Objective
 from spectrum.experimental_spectrum import ExperimentalSpectrum
@@ -31,7 +30,7 @@ class ClusteringObjective(Objective):
         )
         self.clusters = cut_tree(Z=self.linkage, height=cut_point).reshape(-1)
         self.chromosome = np.array(
-            [np.mean(self._energies_array[self.clusters == cluster]) for cluster in np.sort(np.unique(self.clusters))]
+            [np.min(self._energies_array[self.clusters == cluster]) for cluster in np.sort(np.unique(self.clusters))]
         )
 
     @property
