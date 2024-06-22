@@ -7,6 +7,7 @@
     "objective": "clustering",
     "dendrogram_threshold": 0.2,
     "draw_dendrogram": true,
+    "already_broadened": false,
     "energies": {
         "106": -8372.9300,
         "104": -8372.8200,

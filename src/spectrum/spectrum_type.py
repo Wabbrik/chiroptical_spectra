@@ -1,5 +1,7 @@
 from enum import Enum, auto
 
+from broadening.broadening import ecd_broaden, ir_broaden, uv_broaden, vcd_broaden
+
 
 class SpectrumType(Enum):
     ROA = auto()
@@ -37,4 +39,12 @@ prefix_by_type = {
     SpectrumType.IR: "ds_",
     SpectrumType.ECD: "ecd_",
     SpectrumType.UV: "uv_",
+}
+
+broaden_funcs = {
+    SpectrumType.ROA: ir_broaden,
+    SpectrumType.VCD: vcd_broaden,
+    SpectrumType.IR: ir_broaden,
+    SpectrumType.ECD: ecd_broaden,
+    SpectrumType.UV: uv_broaden,
 }

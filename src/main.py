@@ -66,8 +66,16 @@ def main() -> int:
             constant=ip.eu,
         )
 
-    return 0
-
 
 if __name__ == "__main__":
-    sys.exit(main())
+    try:
+        main()
+    except Exception as e:
+        sys.stderr.write(f"\nResulted error: <{type(e).__name__}> ({e})\n")
+
+        if len(sys.argv) > 1 and sys.argv[1] == "trace":
+            from traceback import format_exc
+
+            sys.stderr.write(f"\n{format_exc()}\n")
+
+        sys.exit(1)

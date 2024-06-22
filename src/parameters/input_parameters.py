@@ -29,6 +29,7 @@ class InputParameters:
                 is_opt_candidate=spectrum_data["optimise"],
                 is_reference_candidate=spectrum_data["reference_dendrogram"],
                 energies=self.energies,
+                already_broadened=self.already_broadened,
             )
             for spectrum_data in self.params["spectra_data"]
         ]
@@ -81,6 +82,10 @@ class InputParameters:
     @cached_property
     def reference_candidate(self) -> ExperimentalSpectrum:
         return next(spectrum for spectrum in self.experimental_spectra if spectrum.is_reference_candidate)
+
+    @property
+    def already_broadened(self) -> bool:
+        return self.params["already_broadened"]
 
     def energies_array(self) -> npt.NDArray[np.float64]:
         return np.array(list(self.energies.values()), dtype=np.float64)
