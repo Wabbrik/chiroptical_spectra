@@ -1,3 +1,4 @@
+import os
 from os.path import dirname, join
 from typing import Dict, List, Tuple
 
@@ -71,25 +72,31 @@ class ExperimentalSpectrum(Spectrum):
         self.is_opt_candidate = is_opt_candidate
         self.is_reference_candidate = is_reference_candidate
         self.energies = energies
-        self.broadened: Dict[str, Spectrum] = (
-            self._broaden(broadening_dir, energies)
+        self.broadened, self.broadened_vals = self._broadening(broadening_dir, energies, already_broadened)
+
+    def _broadening(
+        self, broadening_dir: str, energies: Dict[str, float], already_broadened: bool
+    ) -> Tuple[Dict[str, Spectrum], npt.NDArray[np.float64]] | None:
+        broadened = (
+            self.__broaden(broadening_dir, energies)
             if not already_broadened
-            else self._skip_broaden(broadening_dir, energies)
+            else self.__skip_broaden(broadening_dir, energies)
         )
         try:
-            self.broadened_vals = np.array([spec.vals(self.freq_range) for spec in self.broadened.values()])
+            return broadened, np.array([spec.vals(self.freq_range) for spec in broadened.values()])
         except ValueError:
             print(
                 f"There was an issue with the broadened spectra. Are you sure the broadening is correct? already_broadened={already_broadened}"
             )
             raise
 
-    def write_broadened(self, dir: str) -> None:
-        for fname, spectrum in self.broadened.items():
-            spectrum.write(join(dir, f"{fname}.dat"))
+    def __write_broadened(self, broadened: Dict[str, Spectrum], dir: str) -> None:
+        os.makedirs(dir, exist_ok=True)
+        for fname, spectrum in broadened.items():
+            spectrum.write(join(dir, f"{prefix_by_type[self.type]}{fname}.dat"))
 
-    def _broaden(self, dirpath: str, energies: Dict[str, float]) -> Dict[str, Spectrum]:
-        return {
+    def __broaden(self, dirpath: str, energies: Dict[str, float]) -> Dict[str, Spectrum]:
+        broadened = {
             fname: broaden_funcs[self.type](
                 spectrum=Spectrum.from_path(join(dirpath, (f"{prefix_by_type[self.type]}{fname}"))),
                 freq_range=self.freq_range,
@@ -101,8 +108,10 @@ class ExperimentalSpectrum(Spectrum):
             * (1 / (self.path_length * self.molar_concentration))
             for fname in energies
         }
+        self.__write_broadened(broadened, f"{dirpath}/Spectra_{self.type.name}")
+        return broadened
 
-    def _skip_broaden(self, dirpath: str, energies: Dict[str, float]) -> Dict[str, Spectrum]:
+    def __skip_broaden(self, dirpath: str, energies: Dict[str, float]) -> Dict[str, Spectrum]:
         return {fname: Spectrum.from_path(join(dirpath, (f"{prefix_by_type[self.type]}{fname}"))) for fname in energies}
 
     def simulated_vals(self, weights: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
